@@ -38,7 +38,8 @@ export class User {
   @JoinColumn()
   gender: string;
 
-  @OneToOne(() => Skin, (skin) => skin.user)
+  @OneToOne(() => Skin, (skin) => skin.user, { eager: true })
+  @JoinColumn()
   skin: Skin;
 
   @Column('bool', { default: false })
@@ -51,14 +52,13 @@ export class User {
   topics: string[];
 
   @CreateDateColumn({
-    type: 'timestamp without time zone',
+    type: 'timestamptz',
     default: () => 'CURRENT_TIMESTAMP',
   })
   createdAt: Date;
 
   @UpdateDateColumn({
-    type: 'timestamp without time zone',
-    default: () => 'CURRENT_TIMESTAMP',
+    type: 'timestamptz',
   })
   updatedAt: Date;
 }
