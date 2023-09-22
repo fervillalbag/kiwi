@@ -1,11 +1,15 @@
-import { Gender } from '../../gender/entities/gender.entity';
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   OneToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
+
+import { Skin } from '../../skin/entities/skin.entity';
+import { Gender } from '../../gender/entities/gender.entity';
 
 @Entity('users')
 export class User {
@@ -34,8 +38,8 @@ export class User {
   @JoinColumn()
   gender: string;
 
-  // @Column('text', { unique: true })
-  // skin: string;
+  @OneToOne(() => Skin, (skin) => skin.user)
+  skin: Skin;
 
   @Column('bool', { default: false })
   affiliated: boolean;
@@ -46,9 +50,15 @@ export class User {
   @Column('text', { array: true, default: [] })
   topics: string[];
 
-  @Column('date', { default: new Date().toISOString() })
+  @CreateDateColumn({
+    type: 'timestamp without time zone',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
   createdAt: Date;
 
-  @Column('date', { default: new Date().toISOString() })
+  @UpdateDateColumn({
+    type: 'timestamp without time zone',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
   updatedAt: Date;
 }
