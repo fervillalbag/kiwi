@@ -28,6 +28,9 @@ export class User {
   @Column('text', { unique: true })
   username: string;
 
+  @Column('bool', { default: true })
+  isActive: string;
+
   @Column('text', { nullable: true })
   banner?: string;
 
@@ -40,7 +43,7 @@ export class User {
 
   @OneToOne(() => Skin, (skin) => skin.user, { eager: true })
   @JoinColumn()
-  skin: Skin;
+  skin: string;
 
   @Column('bool', { default: false })
   affiliated: boolean;

@@ -1,4 +1,5 @@
 import {
+  IsBoolean,
   IsArray,
   IsEmail,
   IsNotEmpty,
@@ -27,7 +28,13 @@ export class CreateAuthDto {
   @IsNotEmpty()
   gender: string;
 
-  skin: { id: string };
+  @IsString()
+  @IsNotEmpty()
+  skin: string;
+
+  @IsBoolean()
+  @IsOptional()
+  affiliated: boolean;
 
   @IsString()
   @IsOptional()
