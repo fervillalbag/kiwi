@@ -7,6 +7,7 @@ import { GenderModule } from './gender/gender.module';
 import { SkinModule } from './skin/skin.module';
 import { ProductModule } from './product/product.module';
 import { CategoryModule } from './category/category.module';
+import { SubCategoryModule } from './sub-category/sub-category.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { CategoryModule } from './category/category.module';
     SkinModule,
     ProductModule,
     CategoryModule,
+    SubCategoryModule,
   ],
 })
 export class AppModule {}
