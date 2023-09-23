@@ -2,15 +2,14 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  OneToMany,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Category } from '../../category/entities/category.entity';
 
-import { SubCategory } from '../../sub-category/entities/sub-category.entity';
-
-@Entity('categories')
-export class Category {
+@Entity('subcategories')
+export class SubCategory {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -20,10 +19,8 @@ export class Category {
   @Column('text', { nullable: true })
   description?: string;
 
-  @OneToMany(() => SubCategory, (subCategory) => subCategory.category, {
-    eager: true,
-  })
-  subCategory: SubCategory[];
+  @ManyToOne(() => Category, (category) => category.id)
+  category: string;
 
   @Column('text', { nullable: true })
   image?: string;
