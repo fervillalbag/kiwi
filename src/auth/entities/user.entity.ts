@@ -37,6 +37,9 @@ export class User {
   @Column('text', { nullable: true })
   avatar?: string;
 
+  @Column('bool', { default: false })
+  verified?: boolean;
+
   @OneToOne(() => Gender, (gender) => gender.user, { eager: true })
   @JoinColumn()
   gender: string;
