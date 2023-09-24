@@ -9,6 +9,7 @@ import { ProductModule } from './product/product.module';
 import { CategoryModule } from './category/category.module';
 import { SubCategoryModule } from './sub-category/sub-category.module';
 import { StatusProductModule } from './status-product/status-product.module';
+import { CurrencyModule } from './currency/currency.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { StatusProductModule } from './status-product/status-product.module';
     CategoryModule,
     SubCategoryModule,
     StatusProductModule,
+    CurrencyModule,
   ],
 })
 export class AppModule {}
