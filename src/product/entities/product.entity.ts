@@ -5,8 +5,10 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+
 import { User } from '../../auth/entities/user.entity';
-import { StatusProduct } from 'src/status-product/entities/status-product.entity';
+import { StatusProduct } from '../../status-product/entities/status-product.entity';
+import { Currency } from '../../currency/entities/currency.entity';
 
 @Entity('products')
 export class Product {
@@ -22,6 +24,10 @@ export class Product {
   @OneToOne(() => StatusProduct, (statusProduct) => statusProduct.id)
   @JoinColumn()
   statusProduct: string;
+
+  @OneToOne(() => Currency, (currency) => currency.id)
+  @JoinColumn()
+  currency: string;
 
   @Column('text')
   description: string;

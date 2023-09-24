@@ -2,9 +2,11 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Product } from '../../product/entities/product.entity';
 
 @Entity('currencies')
 export class Currency {
@@ -16,6 +18,9 @@ export class Currency {
 
   @Column('text', { unique: true })
   value: string;
+
+  @OneToOne(() => Product, (product) => product.id)
+  user: Product;
 
   @CreateDateColumn({
     type: 'timestamptz',
