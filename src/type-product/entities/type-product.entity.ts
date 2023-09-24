@@ -8,16 +8,13 @@ import {
 } from 'typeorm';
 import { Product } from '../../product/entities/product.entity';
 
-@Entity('currencies')
-export class Currency {
+@Entity('type-product')
+export class TypeProduct {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column('text', { unique: true })
   name: string;
-
-  @Column('text', { unique: true })
-  value: string;
 
   @OneToOne(() => Product, (product) => product.id)
   product: Product;

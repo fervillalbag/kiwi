@@ -17,7 +17,7 @@ export class StatusProduct {
   name: string;
 
   @OneToOne(() => Product, (product) => product.id)
-  user: Product;
+  product: Product;
 
   @CreateDateColumn({
     type: 'timestamptz',

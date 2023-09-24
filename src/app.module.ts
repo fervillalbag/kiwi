@@ -10,6 +10,7 @@ import { CategoryModule } from './category/category.module';
 import { SubCategoryModule } from './sub-category/sub-category.module';
 import { StatusProductModule } from './status-product/status-product.module';
 import { CurrencyModule } from './currency/currency.module';
+import { TypeProductModule } from './type-product/type-product.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { CurrencyModule } from './currency/currency.module';
     SubCategoryModule,
     StatusProductModule,
     CurrencyModule,
+    TypeProductModule,
   ],
 })
 export class AppModule {}
