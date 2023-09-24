@@ -10,6 +10,7 @@ import { User } from '../../auth/entities/user.entity';
 import { StatusProduct } from '../../status-product/entities/status-product.entity';
 import { Currency } from '../../currency/entities/currency.entity';
 import { TypeProduct } from '../../type-product/entities/type-product.entity';
+import { SaleStatus } from '../../sale-status/entities/sale-status.entity';
 
 @Entity('products')
 export class Product {
@@ -33,6 +34,10 @@ export class Product {
   @OneToOne(() => TypeProduct, (typeProduct) => typeProduct.id)
   @JoinColumn()
   type: string;
+
+  @OneToOne(() => SaleStatus, (typeProduct) => typeProduct.id)
+  @JoinColumn()
+  saleStatus: string;
 
   @Column('text')
   description: string;
