@@ -1,48 +1,91 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Model } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
+
 import { CreateTypeAdDto, UpdateTypeAdDto } from './dto';
-import { InjectRepository } from '@nestjs/typeorm';
 import { TypeAd } from './entities/type-ad.entity';
-import { Repository } from 'typeorm';
 
 @Injectable()
 export class TypeAdService {
   constructor(
-    @InjectRepository(TypeAd)
-    private readonly typeAdService: Repository<TypeAd>,
+    @InjectModel(TypeAd.name) private readonly typeAdService: Model<TypeAd>,
   ) {}
 
-  async create(createTypeAdDto: CreateTypeAdDto) {
-    const typeAd = this.typeAdService.create({
-      ...createTypeAdDto,
-    });
-    await this.typeAdService.save(typeAd);
-    return typeAd;
+  async create(dto: CreateTypeAdDto) {
+    try {
+      const typeAd = await this.typeAdService.create(dto);
+      return typeAd;
+    } catch (error) {
+      this.handleException(error);
+    }
   }
 
-  findAll() {
-    return this.typeAdService.find();
+  async findAll() {
+    try {
+      const typeAd = await this.typeAdService.find();
+      return typeAd;
+    } catch (error) {
+      this.handleException(error);
+    }
   }
 
-  findOne(id: string) {
-    return this.typeAdService.findOneBy({ id });
+  async findOne(id: string) {
+    try {
+      const typeAd = await this.typeAdService.findById(id);
+      if (!typeAd)
+        throw new NotFoundException('Tipo de publicidad no encontrada');
+
+      return typeAd;
+    } catch (error) {
+      this.handleException(error);
+    }
   }
 
-  async update(id: string, updateTypeAdDto: UpdateTypeAdDto) {
-    const typeAd = await this.findOne(id);
+  async update(id: string, dto: UpdateTypeAdDto) {
+    try {
+      const typeAd = await this.typeAdService.findById(id);
+      if (!typeAd)
+        throw new NotFoundException('Tipo de publicidad no encontrada');
 
-    if (!typeAd)
-      throw new NotFoundException('Tipo de publicidad no encontrada');
-
-    Object.assign(typeAd, updateTypeAdDto);
-    return await this.typeAdService.save(typeAd);
+      return this.typeAdService.findByIdAndUpdate(id, {
+          ...dto,
+          updatedAt: new Date(),
+        },
+        { new: true });
+    } catch (error) {
+      this.handleException(error);
+    }
   }
 
   async remove(id: string) {
-    const typeAd = await this.findOne(id);
+    try {
+      const typeAd = await this.typeAdService.findById(id);
+      if (!typeAd)
+        throw new NotFoundException('Tipo de publicidad no encontrada');
 
-    if (!typeAd)
-      throw new NotFoundException('Tipo de publicidad no encontrada');
+      return this.typeAdService.findByIdAndDelete(id);
+    } catch (error) {
+      this.handleException(error);
+    }
+  }
 
-    return await this.typeAdService.remove(typeAd);
+  private handleException(error: any) {
+    if (error.code === 11000) {
+      throw new BadRequestException(
+        `El genero ya existe en la base de datos ${JSON.stringify(
+          error.keyValue,
+        )}`,
+      );
+    }
+
+    console.log(error);
+    throw new InternalServerErrorException(
+      'No se pudo crear el genero - Revisar la consola',
+    );
   }
 }

@@ -1,70 +1,51 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  JoinColumn,
-  OneToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 
-import { Skin } from '../../skin/entities/skin.entity';
-import { Gender } from '../../gender/entities/gender.entity';
-
-@Entity('users')
+@Schema()
 export class User {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
-  @Column('text', { unique: true })
+  @Prop({ type: 'string', unique: true })
   email: string;
 
-  @Column('text')
+  @Prop({ type: 'string' })
   fullname: string;
 
-  @Column('text')
+  @Prop({ type: 'string' })
   password: string;
 
-  @Column('text', { unique: true })
+  @Prop({ type: 'string', unique: true })
   username: string;
 
-  @Column('bool', { default: true })
-  isActive: string;
+  @Prop({ type: 'boolean', default: true })
+  isActive: boolean;
 
-  @Column('text', { nullable: true })
+  @Prop({ type: 'string' })
   banner?: string;
 
-  @Column('text', { nullable: true })
+  @Prop({ type: 'string' })
   avatar?: string;
 
-  @Column('bool', { default: false })
+  @Prop({ type: 'boolean' })
   verified?: boolean;
 
-  @OneToOne(() => Gender, (gender) => gender.user, { eager: true })
-  @JoinColumn()
+  @Prop({ type: 'string' })
   gender: string;
 
-  @OneToOne(() => Skin, (skin) => skin.user, { eager: true })
-  @JoinColumn()
+  @Prop({ type: 'string' })
   skin: string;
 
-  @Column('bool', { default: false })
+  @Prop({ type: 'boolean' })
   affiliated: boolean;
 
-  @Column('text', { array: true, default: ['user'] })
+  @Prop({ type: [String], default: [] })
   roles: string[];
 
-  @Column('text', { array: true, default: [] })
+  @Prop({ type: [String], default: [] })
   topics: string[];
 
-  @CreateDateColumn({
-    type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
-  })
+  @Prop({ type: Date, default: new Date() })
   createdAt: Date;
 
-  @UpdateDateColumn({
-    type: 'timestamptz',
-  })
+  @Prop({ type: Date, default: new Date() })
   updatedAt: Date;
 }
+
+export const UserSchema = SchemaFactory.createForClass(User);

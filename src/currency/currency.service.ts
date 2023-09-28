@@ -1,6 +1,11 @@
-import { Repository } from 'typeorm';
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { Model } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 
 import { CreateCurrencyDto, UpdateCurrencyDto } from './dto';
 import { Currency } from './entities/currency.entity';
@@ -8,39 +13,77 @@ import { Currency } from './entities/currency.entity';
 @Injectable()
 export class CurrencyService {
   constructor(
-    @InjectRepository(Currency)
-    private readonly currencyService: Repository<Currency>,
+    @InjectModel(Currency.name)
+    private readonly currencyService: Model<Currency>,
   ) {}
 
-  async create(createCurrencyDto: CreateCurrencyDto) {
-    const currency = this.currencyService.create({
-      ...createCurrencyDto,
-    });
-    await this.currencyService.save(currency);
-    return currency;
+  async create(dto: CreateCurrencyDto) {
+    try {
+      const currency = await this.currencyService.create(dto);
+      return currency;
+    } catch (error) {
+      this.handleException(error);
+    }
   }
 
-  findAll() {
-    return this.currencyService.find();
+  async findAll() {
+    try {
+      const currencies = await this.currencyService.find();
+      return currencies;
+    } catch (error) {
+      this.handleException(error);
+    }
   }
 
-  findOne(id: string) {
-    return this.currencyService.findOneBy({ id });
+  async findOne(id: string) {
+    try {
+      const currency = await this.currencyService.findById(id);
+      if (!currency) throw new NotFoundException('Moneda no encontrada');
+
+      return currency;
+    } catch (error) {
+      this.handleException(error);
+    }
   }
 
-  async update(id: string, updateCurrencyDto: UpdateCurrencyDto) {
-    const currency = await this.findOne(id);
+  async update(id: string, dto: UpdateCurrencyDto) {
+    try {
+      const currency = await this.findOne(id);
+      if (!currency) throw new NotFoundException('Moneda no encontrada');
 
-    if (!currency) throw new NotFoundException('Moneda no encontrada');
-
-    Object.assign(currency, updateCurrencyDto);
-    return await this.currencyService.save(currency);
+      return this.currencyService.findByIdAndUpdate(id, {
+          ...dto,
+          updatedAt: new Date(),
+        },
+        { new: true });
+    } catch (error) {
+      this.handleException(error);
+    }
   }
 
   async remove(id: string) {
-    const currency = await this.findOne(id);
-    if (!currency) throw new NotFoundException('Moneda no encontrada');
+    try {
+      const currency = await this.currencyService.findById(id);
+      if (!currency) throw new NotFoundException('Moneda no encontrada');
 
-    return await this.currencyService.remove(currency);
+      return this.currencyService.findByIdAndDelete(id);
+    } catch (error) {
+      this.handleException(error);
+    }
+  }
+
+  private handleException(error: any) {
+    if (error.code === 11000) {
+      throw new BadRequestException(
+        `El genero ya existe en la base de datos ${JSON.stringify(
+          error.keyValue,
+        )}`,
+      );
+    }
+
+    console.log(error);
+    throw new InternalServerErrorException(
+      'No se pudo crear el genero - Revisar la consola',
+    );
   }
 }

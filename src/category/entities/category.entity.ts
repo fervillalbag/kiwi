@@ -1,44 +1,24 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-import { SubCategory } from '../../sub-category/entities/sub-category.entity';
-
-@Entity('categories')
+@Schema()
 export class Category {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
-  @Column('text', { unique: true })
+  @Prop({ type: 'string', unique: true })
   name: string;
 
-  @Column('text', { nullable: true })
+  @Prop({ type: 'string', nullable: true })
   description?: string;
 
-  @OneToMany(() => SubCategory, (subCategory) => subCategory.category, {
-    eager: true,
-  })
-  subCategory: SubCategory[];
-
-  @Column('text', { nullable: true })
+  @Prop({ type: 'string', nullable: true })
   image?: string;
 
-  @Column('bool', { default: true })
+  @Prop({ type: 'boolean', default: true })
   isActive: boolean;
 
-  @CreateDateColumn({
-    type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
-  })
+  @Prop({ type: Date, default: new Date() })
   createdAt: Date;
 
-  @UpdateDateColumn({
-    type: 'timestamptz',
-  })
+  @Prop({ type: Date, default: new Date() })
   updatedAt: Date;
 }
+
+export const CategorySchema = SchemaFactory.createForClass(Category);

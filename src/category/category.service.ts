@@ -1,6 +1,11 @@
-import { Repository } from 'typeorm';
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { Model } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 
 import { CreateCategoryDto, UpdateCategoryDto } from './dto';
 import { Category } from './entities/category.entity';
@@ -8,37 +13,80 @@ import { Category } from './entities/category.entity';
 @Injectable()
 export class CategoryService {
   constructor(
-    @InjectRepository(Category)
-    private readonly categoryService: Repository<Category>,
+    @InjectModel(Category.name)
+    private readonly categoryService: Model<Category>,
   ) {}
 
-  async create(createCategoryDto: CreateCategoryDto) {
-    const category = this.categoryService.create({ ...createCategoryDto });
-    await this.categoryService.save(category);
-    return category;
+  async create(dto: CreateCategoryDto) {
+    try {
+      const category = await this.categoryService.create(dto);
+      return category;
+    } catch (error) {
+      this.handleException(error);
+    }
   }
 
-  findAll() {
-    return this.categoryService.find();
+  async findAll() {
+    try {
+      const categories = await this.categoryService.find();
+      return categories;
+    } catch (error) {
+      this.handleException(error);
+    }
   }
 
-  findOne(id: string) {
-    return this.categoryService.findOneBy({ id });
+  async findOne(id: string) {
+    try {
+      const category = await this.categoryService.findById(id);
+      if (!category) throw new NotFoundException('Categoria no encontrada');
+
+      return category;
+    } catch (error) {
+      this.handleException(error);
+    }
   }
 
-  async update(id: string, updateCategoryDto: UpdateCategoryDto) {
-    const category = await this.findOne(id);
+  async update(id: string, dto: UpdateCategoryDto) {
+    try {
+      const category = await this.categoryService.findById(id);
+      if (!category) throw new NotFoundException('Categoria no encontrada');
 
-    if (!category) throw new NotFoundException('Categoria no encontrada');
-    Object.assign(category, updateCategoryDto);
-
-    return await this.categoryService.save(category);
+      return this.categoryService.findByIdAndUpdate(
+        id,
+        {
+          ...dto,
+          updatedAt: new Date(),
+        },
+        { new: true },
+      );
+    } catch (error) {
+      this.handleException(error);
+    }
   }
 
   async remove(id: string) {
-    const category = await this.findOne(id);
-    if (!category) throw new NotFoundException('Categoria no encontrada');
+    try {
+      const category = await this.categoryService.findById(id);
+      if (!category) throw new NotFoundException('Categoria no encontrada');
 
-    return await this.categoryService.remove(category);
+      return this.categoryService.findByIdAndDelete(id);
+    } catch (error) {
+      this.handleException(error);
+    }
+  }
+
+  private handleException(error: any) {
+    if (error.code === 11000) {
+      throw new BadRequestException(
+        `El genero ya existe en la base de datos ${JSON.stringify(
+          error.keyValue,
+        )}`,
+      );
+    }
+
+    console.log(error);
+    throw new InternalServerErrorException(
+      'No se pudo crear el genero - Revisar la consola',
+    );
   }
 }

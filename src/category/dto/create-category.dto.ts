@@ -1,10 +1,4 @@
-import {
-  IsArray,
-  IsBoolean,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { SubCategory } from 'src/sub-category/entities/sub-category.entity';
 
 export class CreateCategoryDto {
@@ -21,8 +15,7 @@ export class CreateCategoryDto {
   image?: string;
 
   @IsOptional()
-  @IsArray()
-  subCategory?: SubCategory[];
+  subCategory?: SubCategory;
 
   @IsBoolean()
   @IsOptional()

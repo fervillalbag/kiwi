@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
+// import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AuthModule } from './auth/auth.module';
 import { GenderModule } from './gender/gender.module';
@@ -13,22 +13,14 @@ import { CurrencyModule } from './currency/currency.module';
 import { TypeProductModule } from './type-product/type-product.module';
 import { SaleStatusModule } from './sale-status/sale-status.module';
 import { TypeAdModule } from './type-ad/type-ad.module';
+import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: process.env.DB_HOST,
-      port: +process.env.DB_PORT,
-      database: process.env.DB_NAME,
-      username: process.env.DB_USERNAME,
-      password: process.env.DB_PASSWORD,
-      autoLoadEntities: true,
-      synchronize: true,
-    }),
-    AuthModule,
+    MongooseModule.forRoot(process.env.MONGO_DB),
     GenderModule,
+    AuthModule,
     SkinModule,
     ProductModule,
     CategoryModule,

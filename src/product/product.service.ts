@@ -1,26 +1,102 @@
-import { Injectable } from '@nestjs/common';
-import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
+import { Model } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
+
+import { CreateProductDto, UpdateProductDto } from './dto';
+import { Product } from './entities/product.entity';
 
 @Injectable()
 export class ProductService {
-  create(createProductDto: CreateProductDto) {
-    return 'This action adds a new product';
+  constructor(
+    @InjectModel(Product.name) private readonly productService: Model<Product>,
+  ) {}
+
+  async create(dto: CreateProductDto) {
+    try {
+      const product = await this.productService.create(dto);
+      return product;
+    } catch (error) {
+      this.handleException(error);
+    }
   }
 
-  findAll() {
-    return `This action returns all product`;
+  async findAll() {
+    try {
+      const products = await this.productService.find();
+      return products;
+    } catch (error) {
+      this.handleException(error);
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} product`;
+  async findOne(id: string) {
+    try {
+      const product = await this.productService.findById(id);
+      if (!product) throw new NotFoundException('Producto no encontrado');
+
+      return product;
+    } catch (error) {
+      this.handleException(error);
+    }
   }
 
-  update(id: number, updateProductDto: UpdateProductDto) {
-    return `This action updates a #${id} product`;
+  async findByUser(userId: string) {
+    try {
+      const productByUser = await this.productService.findOne({
+        owner: userId,
+      });
+      if (!productByUser) throw new NotFoundException('Producto no encontrado');
+    } catch (error) {
+      this.handleException(error);
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} product`;
+  async update(id: string, dto: UpdateProductDto) {
+    try {
+      const product = await this.findOne(id);
+      if (!product) throw new NotFoundException('Producto no encontrado');
+
+      return this.productService.findByIdAndUpdate(
+        id,
+        {
+          ...dto,
+          updatedAt: new Date(),
+        },
+        { new: true },
+      );
+    } catch (error) {
+      this.handleException(error);
+    }
+  }
+
+  async remove(id: string) {
+    try {
+      const product = await this.findOne(id);
+      if (!product) throw new NotFoundException('Producto no encontrado');
+
+      return this.productService.findByIdAndDelete(id);
+    } catch (error) {
+      this.handleException(error);
+    }
+  }
+
+  private handleException(error: any) {
+    if (error.code === 11000) {
+      throw new BadRequestException(
+        `El genero ya existe en la base de datos ${JSON.stringify(
+          error.keyValue,
+        )}`,
+      );
+    }
+
+    console.log(error);
+    throw new InternalServerErrorException(
+      'No se pudo crear el genero - Revisar la consola',
+    );
   }
 }

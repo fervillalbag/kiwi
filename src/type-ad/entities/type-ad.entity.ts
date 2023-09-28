@@ -1,32 +1,15 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  OneToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
-import { Product } from '../../product/entities/product.entity';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-@Entity('type-ad')
+@Schema()
 export class TypeAd {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
-  @Column('text', { unique: true })
+  @Prop({ type: 'string', unique: true })
   name: string;
 
-  @OneToOne(() => Product, (product) => product.id)
-  product: Product;
-
-  @CreateDateColumn({
-    type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
-  })
+  @Prop({ type: Date, default: new Date() })
   createdAt: Date;
 
-  @UpdateDateColumn({
-    type: 'timestamptz',
-  })
+  @Prop({ type: Date, default: new Date() })
   updatedAt: Date;
 }
+
+export const TypeAdSchema = SchemaFactory.createForClass(TypeAd);

@@ -1,6 +1,11 @@
-import { Repository } from 'typeorm';
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { Model } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 
 import { CreateSaleStatusDto, UpdateSaleStatusDto } from './dto/';
 import { SaleStatus } from './entities/sale-status.entity';
@@ -8,42 +13,77 @@ import { SaleStatus } from './entities/sale-status.entity';
 @Injectable()
 export class SaleStatusService {
   constructor(
-    @InjectRepository(SaleStatus)
-    private readonly saleStatusService: Repository<SaleStatus>,
+    @InjectModel(SaleStatus.name)
+    private readonly saleStatusService: Model<SaleStatus>,
   ) {}
 
-  async create(createSaleStatusDto: CreateSaleStatusDto) {
-    const saleStatus = this.saleStatusService.create({
-      ...createSaleStatusDto,
-    });
-    await this.saleStatusService.save(saleStatus);
-    return saleStatus;
+  async create(dto: CreateSaleStatusDto) {
+    try {
+      const saleStatus = await this.saleStatusService.create(dto);
+      return saleStatus;
+    } catch (error) {
+      this.handleException(error);
+    }
   }
 
-  findAll() {
-    return this.saleStatusService.find();
+  async findAll() {
+    try {
+      const salesStatus = await this.saleStatusService.find();
+      return salesStatus;
+    } catch (error) {
+      this.handleException(error);
+    }
   }
 
-  findOne(id: string) {
-    return this.saleStatusService.findOneBy({ id });
+  async findOne(id: string) {
+    try {
+      const saleStatus = await this.saleStatusService.findById(id);
+      return saleStatus;
+    } catch (error) {
+      this.handleException(error);
+    }
   }
 
-  async update(id: string, updateSaleStatusDto: UpdateSaleStatusDto) {
-    const saleStatus = await this.findOne(id);
+  async update(id: string, dto: UpdateSaleStatusDto) {
+    try {
+      const saleStatus = await this.findOne(id);
+      if (!saleStatus)
+        throw new NotFoundException('El estado de la oferta no existe');
 
-    if (!saleStatus)
-      throw new NotFoundException('Estado de producto no encontrado');
-
-    Object.assign(saleStatus, updateSaleStatusDto);
-    return await this.saleStatusService.save(saleStatus);
+      return this.saleStatusService.findByIdAndUpdate(id, {
+          ...dto,
+          updatedAt: new Date(),
+        },
+        { new: true });
+    } catch (error) {
+      this.handleException(error);
+    }
   }
 
   async remove(id: string) {
-    const saleStatus = await this.findOne(id);
+    try {
+      const saleStatus = await this.findOne(id);
+      if (!saleStatus)
+        throw new NotFoundException('El estado de la oferta no existe');
 
-    if (!saleStatus)
-      throw new NotFoundException('Estado de producto no encontrado');
+      return this.saleStatusService.findByIdAndDelete(id);
+    } catch (error) {
+      this.handleException(error);
+    }
+  }
 
-    return await this.saleStatusService.remove(saleStatus);
+  private handleException(error: any) {
+    if (error.code === 11000) {
+      throw new BadRequestException(
+        `El genero ya existe en la base de datos ${JSON.stringify(
+          error.keyValue,
+        )}`,
+      );
+    }
+
+    console.log(error);
+    throw new InternalServerErrorException(
+      'No se pudo crear el genero - Revisar la consola',
+    );
   }
 }

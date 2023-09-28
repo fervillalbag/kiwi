@@ -1,32 +1,15 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  UpdateDateColumn,
-  CreateDateColumn,
-  OneToOne,
-} from 'typeorm';
-import { Product } from '../../product/entities/product.entity';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-@Entity('sale-status')
+@Schema()
 export class SaleStatus {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
-  @Column('text', { unique: true })
+  @Prop({ type: 'string', unique: true })
   name: string;
 
-  @OneToOne(() => Product, (product) => product.id)
-  product: Product;
-
-  @CreateDateColumn({
-    type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
-  })
+  @Prop({ type: Date, default: new Date() })
   createdAt: Date;
 
-  @UpdateDateColumn({
-    type: 'timestamptz',
-  })
+  @Prop({ type: Date, default: new Date() })
   updatedAt: Date;
 }
+
+export const SaleStatusSchema = SchemaFactory.createForClass(SaleStatus);

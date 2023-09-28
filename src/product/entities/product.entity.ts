@@ -1,51 +1,51 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  OneToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-import { User } from '../../auth/entities/user.entity';
-import { StatusProduct } from '../../status-product/entities/status-product.entity';
-import { Currency } from '../../currency/entities/currency.entity';
-import { TypeProduct } from '../../type-product/entities/type-product.entity';
-import { SaleStatus } from '../../sale-status/entities/sale-status.entity';
-
-@Entity('products')
+@Schema()
 export class Product {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
-  @Column('text')
+  @Prop({ type: 'string', required: true })
   measureType: string;
 
-  @Column('text')
+  @Prop({ type: 'string', required: true })
   title: string;
 
-  @OneToOne(() => StatusProduct, (statusProduct) => statusProduct.id)
-  @JoinColumn()
-  statusProduct: string;
+  @Prop({ type: 'string', required: true })
+  statusProduct: string; /* 1 */
 
-  @OneToOne(() => Currency, (currency) => currency.id)
-  @JoinColumn()
-  currency: string;
+  @Prop({ type: 'string', required: true })
+  category: string; /* 2 */
 
-  @OneToOne(() => TypeProduct, (typeProduct) => typeProduct.id)
-  @JoinColumn()
-  type: string;
+  @Prop({ type: 'string', required: true })
+  subCategory: string; /* 3 */
 
-  @OneToOne(() => SaleStatus, (typeProduct) => typeProduct.id)
-  @JoinColumn()
-  saleStatus: string;
+  @Prop({ type: 'string', required: true })
+  currency: string; /* 4 */
 
-  @Column('text')
+  @Prop({ type: 'string', required: true })
+  type: string; /* 5 */
+
+  @Prop({ type: 'string', required: true })
+  saleStatus: string; /* 6 */
+
+  @Prop({ type: 'string', required: true })
+  owner: string; /* 7 */
+
+  @Prop({ type: 'string', required: true })
   description: string;
 
-  @OneToOne(() => User, (user) => user.id)
-  @JoinColumn()
-  owner: string;
-
-  @Column('float')
+  @Prop({ type: 'number', required: true })
   price: number;
+
+  @Prop({ type: [String], default: [] })
+  tags: string[];
+
+  @Prop({ type: [String], default: [] })
+  images: string[];
+
+  @Prop({ type: Date, default: new Date() })
+  createdAt: Date;
+
+  @Prop({ type: Date, default: new Date() })
+  updatedAt: Date;
 }
+
+export const ProductSchema = SchemaFactory.createForClass(Product);
