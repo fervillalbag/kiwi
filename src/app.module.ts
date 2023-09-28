@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-// import { TypeOrmModule } from '@nestjs/typeorm';
+import { MongooseModule } from '@nestjs/mongoose';
 
 import { AuthModule } from './auth/auth.module';
 import { GenderModule } from './gender/gender.module';
@@ -13,11 +13,15 @@ import { CurrencyModule } from './currency/currency.module';
 import { TypeProductModule } from './type-product/type-product.module';
 import { SaleStatusModule } from './sale-status/sale-status.module';
 import { TypeAdModule } from './type-ad/type-ad.module';
-import { MongooseModule } from '@nestjs/mongoose';
+import { EnvConfiguration } from './config/app.config';
+import { JoinValidationSchema } from './config/joi.validation';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      load: [EnvConfiguration],
+      validationSchema: JoinValidationSchema,
+    }),
     MongooseModule.forRoot(process.env.MONGO_DB),
     GenderModule,
     AuthModule,
