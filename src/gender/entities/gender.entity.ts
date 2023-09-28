@@ -1,14 +1,15 @@
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { User } from '../../auth/entities/user.entity';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-@Entity('genders')
+@Schema()
 export class Gender {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
-  @Column('text')
+  @Prop({ unique: true, index: true })
   name: string;
 
-  @OneToOne(() => User, (user) => user.gender)
-  user: User;
+  @Prop({ type: Date, default: new Date() })
+  createdAt: Date;
+
+  @Prop({ type: Date, default: new Date() })
+  updatedAt: Date;
 }
+
+export const GenderSchema = SchemaFactory.createForClass(Gender);

@@ -1,38 +1,21 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  OneToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
-import { User } from '../../auth/entities/user.entity';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-@Entity('skins')
+@Schema()
 export class Skin {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
-  @Column('text')
+  @Prop({ type: 'string' })
   name: string;
 
-  @Column('text')
+  @Prop({ type: 'string' })
   description: string;
 
-  @Column('text')
+  @Prop({ type: 'string' })
   image: string;
 
-  @OneToOne(() => User, (user) => user.skin)
-  user: User;
-
-  @CreateDateColumn({
-    type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
-  })
+  @Prop({ type: Date, default: new Date() })
   createdAt: Date;
 
-  @UpdateDateColumn({
-    type: 'timestamptz',
-  })
+  @Prop({ type: Date, default: new Date() })
   updatedAt: Date;
 }
+
+export const SkinSchema = SchemaFactory.createForClass(Skin);

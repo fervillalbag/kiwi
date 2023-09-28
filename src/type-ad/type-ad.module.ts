@@ -1,13 +1,14 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { MongooseModule } from '@nestjs/mongoose';
 
 import { TypeAdService } from './type-ad.service';
 import { TypeAdController } from './type-ad.controller';
-import { Product } from '../product/entities/product.entity';
-import { TypeAd } from './entities/type-ad.entity';
+import { TypeAd, TypeAdSchema } from './entities/type-ad.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Product, TypeAd])],
+  imports: [
+    MongooseModule.forFeature([{ name: TypeAd.name, schema: TypeAdSchema }]),
+  ],
   controllers: [TypeAdController],
   providers: [TypeAdService],
 })

@@ -1,10 +1,11 @@
-import { Repository } from 'typeorm';
+import { Model } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
 import {
   BadRequestException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 
 import { CreateAuthDto, UpdateAuthDto } from './dto';
 import { User } from './entities/user.entity';
@@ -12,56 +13,80 @@ import { User } from './entities/user.entity';
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectRepository(User) private readonly authService: Repository<User>,
+    @InjectModel(User.name) private readonly userService: Model<User>,
   ) {}
 
-  async create(createAuthDto: CreateAuthDto) {
-    const user = this.authService.create({ ...createAuthDto });
-    await this.authService.save(user);
-    return user;
+  async create(dto: CreateAuthDto) {
+    try {
+      const user = await this.userService.create(dto);
+      return user;
+    } catch (error) {
+      this.handleException(error);
+    }
   }
 
-  findAll() {
-    return this.authService.find();
+  async findAll() {
+    try {
+      const users = await this.userService.find();
+      return users;
+    } catch (error) {
+      this.userService.find();
+    }
   }
 
   async findOne(param: string, value: string) {
-    let queryBuilder = this.authService.createQueryBuilder('user');
+    try {
+      const user = await this.userService.findOne({ [param]: value });
 
-    switch (param) {
-      case 'email':
-        queryBuilder = queryBuilder.where('user.email = :value', { value });
-        break;
-      case 'username':
-        queryBuilder = queryBuilder.where('user.username = :value', { value });
-        break;
-      case 'id':
-        queryBuilder = queryBuilder.where('user.id = :value', { value });
-        break;
+      if (!user) throw new NotFoundException('El usuario no existe');
 
-      default:
-        throw new BadRequestException('Parametro no valida para la busqueda');
+      return user;
+    } catch (error) {
+      this.handleException(error);
     }
-
-    const user = await queryBuilder.getOne();
-    if (!user) throw new NotFoundException('Usuario no encontrado');
-    return user;
   }
 
-  async update(id: string, updateAuthDto: UpdateAuthDto) {
-    const user = await this.findOne('id', id);
+  async update(id: string, dto: UpdateAuthDto) {
+    try {
+      const user = await this.findOne('id', id);
+      if (!user) throw new NotFoundException('El usuario no existe');
 
-    if (!user) throw new NotFoundException('Usuario no encontrado');
-
-    Object.assign(user, updateAuthDto);
-    return await this.authService.save(user);
+      return this.userService.findByIdAndUpdate(
+        id,
+        {
+          ...dto,
+          updatedAt: new Date(),
+        },
+        { new: true },
+      );
+    } catch (error) {
+      this.handleException(error);
+    }
   }
 
   async remove(id: string) {
-    const user = await this.findOne('id', id);
+    try {
+      const user = await this.findOne('id', id);
+      if (!user) throw new NotFoundException('Usuario no encontrado');
 
-    if (!user) throw new NotFoundException('Usuario no encontrado');
+      return await this.userService.findByIdAndDelete(id);
+    } catch (error) {
+      this.handleException(error);
+    }
+  }
 
-    return await this.authService.remove(user);
+  private handleException(error: any) {
+    if (error.code === 11000) {
+      throw new BadRequestException(
+        `El genero ya existe en la base de datos ${JSON.stringify(
+          error.keyValue,
+        )}`,
+      );
+    }
+
+    console.log(error);
+    throw new InternalServerErrorException(
+      'No se pudo crear el genero - Revisar la consola',
+    );
   }
 }

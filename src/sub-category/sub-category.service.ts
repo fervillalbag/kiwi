@@ -1,6 +1,11 @@
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Model } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 
 import { CreateSubCategoryDto, UpdateSubCategoryDto } from './dto';
 import { SubCategory } from './entities/sub-category.entity';
@@ -8,43 +13,77 @@ import { SubCategory } from './entities/sub-category.entity';
 @Injectable()
 export class SubCategoryService {
   constructor(
-    @InjectRepository(SubCategory)
-    private readonly subCategoryService: Repository<SubCategory>,
+    @InjectModel(SubCategory.name)
+    private readonly subCategoryService: Model<SubCategory>,
   ) {}
 
-  async create(createSubCategoryDto: CreateSubCategoryDto) {
-    const subCategory = this.subCategoryService.create({
-      ...createSubCategoryDto,
-    });
-
-    await this.subCategoryService.save(subCategory);
-    return subCategory;
+  async create(dto: CreateSubCategoryDto) {
+    try {
+      const subCategory = await this.subCategoryService.create(dto);
+      return subCategory;
+    } catch (error) {
+      this.handleException(error);
+    }
   }
 
-  findAll() {
-    return this.subCategoryService.find();
+  async findAll() {
+    try {
+      const subCategories = await this.subCategoryService.find();
+      return subCategories;
+    } catch (error) {
+      this.handleException(error);
+    }
   }
 
-  findOne(id: string) {
-    return this.subCategoryService.findOneBy({ id });
+  async findOne(id: string) {
+    try {
+      const subCategory = await this.subCategoryService.findById(id);
+      return subCategory;
+    } catch (error) {
+      this.handleException(error);
+    }
   }
 
-  async update(id: string, updateSubCategoryDto: UpdateSubCategoryDto) {
-    const subCategory = await this.findOne(id);
+  async update(id: string, dto: UpdateSubCategoryDto) {
+    try {
+      const subCategory = await this.findOne(id);
+      if (!subCategory)
+        throw new NotFoundException('Sub categoria no encontrada');
 
-    if (!subCategory)
-      throw new NotFoundException('Sub categoria no encontrada');
-
-    Object.assign(subCategory, updateSubCategoryDto);
-    return await this.subCategoryService.save(subCategory);
+      return this.subCategoryService.findByIdAndUpdate(id, {
+          ...dto,
+          updatedAt: new Date(),
+        },
+        { new: true });
+    } catch (error) {
+      this.handleException(error);
+    }
   }
 
   async remove(id: string) {
-    const subCategory = await this.findOne(id);
+    try {
+      const subCategory = await this.findOne(id);
+      if (!subCategory)
+        throw new NotFoundException('Sub categoria no encontrada');
 
-    if (!subCategory)
-      throw new NotFoundException('Sub categoria no encontrada');
+      return this.subCategoryService.findByIdAndDelete(id);
+    } catch (error) {
+      this.handleException(error);
+    }
+  }
 
-    return await this.subCategoryService.remove(subCategory);
+  private handleException(error: any) {
+    if (error.code === 11000) {
+      throw new BadRequestException(
+        `El genero ya existe en la base de datos ${JSON.stringify(
+          error.keyValue,
+        )}`,
+      );
+    }
+
+    console.log(error);
+    throw new InternalServerErrorException(
+      'No se pudo crear el genero - Revisar la consola',
+    );
   }
 }
