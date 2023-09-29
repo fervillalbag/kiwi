@@ -41,9 +41,9 @@ export class ProductService {
     }
   }
 
-  async findOne(id: string) {
+  async findOne(param: string, value: string) {
     try {
-      const product = await this.productService.findById(id);
+      const product = await this.productService.findOne({ [param]: value });
       if (!product) throw new NotFoundException('Producto no encontrado');
 
       return product;
@@ -86,7 +86,7 @@ export class ProductService {
 
   async update(id: string, dto: UpdateProductDto) {
     try {
-      const product = await this.findOne(id);
+      const product = await this.findOne('_id', id);
       if (!product) throw new NotFoundException('Producto no encontrado');
 
       return this.productService.findByIdAndUpdate(
@@ -104,7 +104,7 @@ export class ProductService {
 
   async remove(id: string) {
     try {
-      const product = await this.findOne(id);
+      const product = await this.findOne('_id', id);
       if (!product) throw new NotFoundException('Producto no encontrado');
 
       return this.productService.findByIdAndDelete(id);
