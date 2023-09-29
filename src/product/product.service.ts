@@ -9,11 +9,14 @@ import {
 
 import { CreateProductDto, UpdateProductDto } from './dto';
 import { Product } from './entities/product.entity';
+import { StatusProduct } from '../status-product/entities/status-product.entity';
 
 @Injectable()
 export class ProductService {
   constructor(
     @InjectModel(Product.name) private readonly productService: Model<Product>,
+    @InjectModel(StatusProduct.name)
+    private readonly statusProductService: Model<StatusProduct>,
   ) {}
 
   async create(dto: CreateProductDto) {
@@ -27,7 +30,11 @@ export class ProductService {
 
   async findAll() {
     try {
-      const products = await this.productService.find();
+      const products = await this.productService
+        .find()
+        .populate(
+          'statusProduct category type currency subCategory saleStatus',
+        );
       return products;
     } catch (error) {
       this.handleException(error);
@@ -54,6 +61,23 @@ export class ProductService {
         throw new NotFoundException('Producto no encontrado');
 
       return productsByUser;
+    } catch (error) {
+      this.handleException(error);
+    }
+  }
+
+  async findByCard() {
+    try {
+      const products = await this.productService.find();
+      const filteredProducts = products.map((product) => ({
+        _id: product._id.toString(),
+        title: product.title,
+        images: product.images,
+        price: product.price,
+        currency: product.currency,
+      }));
+
+      return filteredProducts;
     } catch (error) {
       this.handleException(error);
     }
