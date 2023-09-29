@@ -1,7 +1,16 @@
-import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  Patch,
+} from '@nestjs/common';
 
 import { GenderService } from './gender.service';
 import { CreateGenderDto } from './dto/create-gender.dto';
+import { UpdateGenderDto } from './dto';
 
 @Controller('gender')
 export class GenderController {
@@ -17,9 +26,14 @@ export class GenderController {
     return this.genderService.findAll();
   }
 
-  @Get(':name')
-  findOne(@Param('name') name: string) {
-    return this.genderService.findOne(name);
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.genderService.findOne(id);
+  }
+
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updateGenderDto: UpdateGenderDto) {
+    return this.genderService.update(id, updateGenderDto);
   }
 
   @Delete(':name')

@@ -19,3 +19,4 @@ export class Skin {
 }
 
 export const SkinSchema = SchemaFactory.createForClass(Skin);
+SkinSchema.set('versionKey', false);

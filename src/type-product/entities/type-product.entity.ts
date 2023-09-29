@@ -13,3 +13,4 @@ export class TypeProduct {
 }
 
 export const TypeProductSchema = SchemaFactory.createForClass(TypeProduct);
+TypeProductSchema.set('versionKey', false);

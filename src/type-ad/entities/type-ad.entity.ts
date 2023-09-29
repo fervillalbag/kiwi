@@ -13,3 +13,4 @@ export class TypeAd {
 }
 
 export const TypeAdSchema = SchemaFactory.createForClass(TypeAd);
+TypeAdSchema.set('versionKey', false);

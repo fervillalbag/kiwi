@@ -48,7 +48,7 @@ export class AuthService {
 
   async update(id: string, dto: UpdateAuthDto) {
     try {
-      const user = await this.findOne('id', id);
+      const user = await this.findOne('_id', id);
       if (!user) throw new NotFoundException('El usuario no existe');
 
       return this.userService.findByIdAndUpdate(
@@ -66,7 +66,7 @@ export class AuthService {
 
   async remove(id: string) {
     try {
-      const user = await this.findOne('id', id);
+      const user = await this.findOne('_id', id);
       if (!user) throw new NotFoundException('Usuario no encontrado');
 
       return await this.userService.findByIdAndDelete(id);

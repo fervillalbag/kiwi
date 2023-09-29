@@ -16,3 +16,4 @@ export class Currency {
 }
 
 export const CurrencySchema = SchemaFactory.createForClass(Currency);
+CurrencySchema.set('versionKey', false);
