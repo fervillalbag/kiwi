@@ -68,16 +68,17 @@ export class ProductService {
 
   async findByCard() {
     try {
-      const products = await this.productService.find();
-      const filteredProducts = products.map((product) => ({
+      const products = await this.productService.find().populate('currency');
+      return products.map((product: any) => ({
         _id: product._id.toString(),
         title: product.title,
-        images: product.images,
         price: product.price,
-        currency: product.currency,
+        images: product.images,
+        currency: {
+          _id: product.currency._id.toString(),
+          name: product.currency.name,
+        },
       }));
-
-      return filteredProducts;
     } catch (error) {
       this.handleException(error);
     }

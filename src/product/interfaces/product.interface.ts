@@ -7,7 +7,7 @@ import { ISubCategory } from '../../sub-category/interfaces/sub-category.interfa
 import { ITypeProduct } from '../../type-product/interfaces/type-product.interface';
 
 export interface IProduct {
-  _id?: string;
+  // _id?: string;
   measureType: string;
   title: string;
   statusProduct: IStatusProduct;
