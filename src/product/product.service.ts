@@ -41,9 +41,9 @@ export class ProductService {
     }
   }
 
-  async findOne(id: string) {
+  async findOne(param: string, value: string) {
     try {
-      const product = await this.productService.findById(id);
+      const product = await this.productService.findOne({ [param]: value });
       if (!product) throw new NotFoundException('Producto no encontrado');
 
       return product;
@@ -68,16 +68,17 @@ export class ProductService {
 
   async findByCard() {
     try {
-      const products = await this.productService.find();
-      const filteredProducts = products.map((product) => ({
+      const products = await this.productService.find().populate('currency');
+      return products.map((product: any) => ({
         _id: product._id.toString(),
         title: product.title,
-        images: product.images,
         price: product.price,
-        currency: product.currency,
+        images: product.images,
+        currency: {
+          _id: product.currency._id.toString(),
+          name: product.currency.name,
+        },
       }));
-
-      return filteredProducts;
     } catch (error) {
       this.handleException(error);
     }
@@ -85,7 +86,7 @@ export class ProductService {
 
   async update(id: string, dto: UpdateProductDto) {
     try {
-      const product = await this.findOne(id);
+      const product = await this.findOne('_id', id);
       if (!product) throw new NotFoundException('Producto no encontrado');
 
       return this.productService.findByIdAndUpdate(
@@ -103,7 +104,7 @@ export class ProductService {
 
   async remove(id: string) {
     try {
-      const product = await this.findOne(id);
+      const product = await this.findOne('_id', id);
       if (!product) throw new NotFoundException('Producto no encontrado');
 
       return this.productService.findByIdAndDelete(id);
