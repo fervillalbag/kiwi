@@ -35,6 +35,11 @@ export class ProductController {
     return this.productService.findByUser(id);
   }
 
+  @Get('card')
+  findByCard() {
+    return this.productService.findByCard();
+  }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
     return this.productService.update(id, updateProductDto);

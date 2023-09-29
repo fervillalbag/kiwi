@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 @Schema()
@@ -8,26 +9,54 @@ export class Product {
   @Prop({ type: 'string', required: true })
   title: string;
 
-  @Prop({ type: 'string', required: true })
-  statusProduct: string; /* 1 */
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'StatusProduct',
+    required: true,
+  })
+  statusProduct: mongoose.Schema.Types.ObjectId;
 
-  @Prop({ type: 'string', required: true })
-  category: string; /* 2 */
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Category',
+    required: true,
+  })
+  category: mongoose.Schema.Types.ObjectId;
 
-  @Prop({ type: 'string', required: true })
-  subCategory: string; /* 3 */
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'SubCategory',
+    required: true,
+  })
+  subCategory: mongoose.Schema.Types.ObjectId;
 
-  @Prop({ type: 'string', required: true })
-  currency: string; /* 4 */
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Currency',
+    required: true,
+  })
+  currency: mongoose.Schema.Types.ObjectId;
 
-  @Prop({ type: 'string', required: true })
-  type: string; /* 5 */
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'TypeProduct',
+    required: true,
+  })
+  type: mongoose.Schema.Types.ObjectId;
 
-  @Prop({ type: 'string', required: true })
-  saleStatus: string; /* 6 */
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'SaleStatus',
+    required: true,
+  })
+  saleStatus: mongoose.Schema.Types.ObjectId;
 
-  @Prop({ type: 'string', required: true })
-  owner: string; /* 7 */
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  })
+  owner: mongoose.Schema.Types.ObjectId;
 
   @Prop({ type: 'string', required: true })
   description: string;
