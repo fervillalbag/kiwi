@@ -47,10 +47,13 @@ export class ProductService {
 
   async findByUser(userId: string) {
     try {
-      const productByUser = await this.productService.findOne({
+      const productsByUser = await this.productService.find({
         owner: userId,
       });
-      if (!productByUser) throw new NotFoundException('Producto no encontrado');
+      if (!productsByUser)
+        throw new NotFoundException('Producto no encontrado');
+
+      return productsByUser;
     } catch (error) {
       this.handleException(error);
     }

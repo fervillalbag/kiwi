@@ -4,10 +4,11 @@ import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
 
 import { Gender } from './entities/gender.entity';
-import { CreateGenderDto } from './dto';
+import { CreateGenderDto, UpdateGenderDto } from './dto';
 
 @Injectable()
 export class GenderService {
@@ -33,9 +34,22 @@ export class GenderService {
     }
   }
 
-  async findOne(name: string) {
+  async update(id: string, dto: UpdateGenderDto) {
     try {
-      const gender = await this.genderService.findOne({ name });
+      const gender = await this.findOne(id);
+      if (!gender) throw new NotFoundException('Genero no encontrado');
+
+      return this.genderService.findByIdAndUpdate(
+        id,
+        { ...dto, updatedAt: new Date() },
+        { new: true },
+      );
+    } catch (error) {}
+  }
+
+  async findOne(id: string) {
+    try {
+      const gender = await this.genderService.findById(id);
       return gender;
     } catch (error) {
       this.handleException(error);

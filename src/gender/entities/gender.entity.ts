@@ -13,3 +13,4 @@ export class Gender {
 }
 
 export const GenderSchema = SchemaFactory.createForClass(Gender);
+GenderSchema.set('versionKey', false);

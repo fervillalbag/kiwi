@@ -8,6 +8,9 @@ export class SubCategory {
   @Prop({ type: 'string', nullable: true })
   description?: string;
 
+  @Prop({ type: 'string', required: true })
+  category: string;
+
   @Prop({ type: 'string', nullable: true })
   image?: string;
 
@@ -22,3 +25,4 @@ export class SubCategory {
 }
 
 export const SubCategorySchema = SchemaFactory.createForClass(SubCategory);
+SubCategorySchema.set('versionKey', false);

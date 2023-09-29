@@ -13,3 +13,4 @@ export class StatusProduct {
 }
 
 export const StatusProductSchema = SchemaFactory.createForClass(StatusProduct);
+StatusProductSchema.set('versionKey', false);
