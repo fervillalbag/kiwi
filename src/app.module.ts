@@ -15,6 +15,7 @@ import { SaleStatusModule } from './sale-status/sale-status.module';
 import { TypeAdModule } from './type-ad/type-ad.module';
 import { EnvConfiguration } from './config/app.config';
 import { JoinValidationSchema } from './config/joi.validation';
+import { BranchOfficeModule } from './branch-office/branch-office.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { JoinValidationSchema } from './config/joi.validation';
     TypeProductModule,
     SaleStatusModule,
     TypeAdModule,
+    BranchOfficeModule,
   ],
 })
 export class AppModule {}
