@@ -20,6 +20,9 @@ export class User {
   @Prop({ type: 'string' })
   banner?: string;
 
+  @Prop({ type: [String] })
+  branch_offices?: string[];
+
   @Prop({ type: 'string' })
   avatar?: string;
 
