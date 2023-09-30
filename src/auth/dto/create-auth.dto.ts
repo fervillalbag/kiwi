@@ -24,6 +24,10 @@ export class CreateAuthDto {
   @IsNotEmpty()
   username: string;
 
+  @IsOptional()
+  @IsArray()
+  branch_offices?: string[];
+
   @IsString()
   @IsNotEmpty()
   gender: string;
