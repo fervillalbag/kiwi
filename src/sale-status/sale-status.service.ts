@@ -50,11 +50,14 @@ export class SaleStatusService {
       if (!saleStatus)
         throw new NotFoundException('El estado de la oferta no existe');
 
-      return this.saleStatusService.findByIdAndUpdate(id, {
+      return this.saleStatusService.findByIdAndUpdate(
+        id,
+        {
           ...dto,
           updatedAt: new Date(),
         },
-        { new: true });
+        { new: true },
+      );
     } catch (error) {
       this.handleException(error);
     }
@@ -82,8 +85,6 @@ export class SaleStatusService {
     }
 
     console.log(error);
-    throw new InternalServerErrorException(
-      'No se pudo crear el genero - Revisar la consola',
-    );
+    throw new BadRequestException(error);
   }
 }

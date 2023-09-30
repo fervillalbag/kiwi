@@ -50,11 +50,14 @@ export class SkinService {
       const skin = await this.findOne(id);
       if (!skin) throw new NotFoundException('Skin no encontrada!');
 
-      return this.skinService.findByIdAndUpdate(id, {
+      return this.skinService.findByIdAndUpdate(
+        id,
+        {
           ...dto,
           updatedAt: new Date(),
         },
-        { new: true });
+        { new: true },
+      );
     } catch (error) {
       this.handleException(error);
     }
@@ -81,8 +84,6 @@ export class SkinService {
     }
 
     console.log(error);
-    throw new InternalServerErrorException(
-      'No se pudo crear el genero - Revisar la consola',
-    );
+    throw new BadRequestException(error);
   }
 }

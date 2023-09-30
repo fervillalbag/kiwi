@@ -4,12 +4,11 @@ import { InjectModel } from '@nestjs/mongoose';
 import {
   BadRequestException,
   Injectable,
-  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
-import { CreateAuthDto, UpdateAuthDto } from './dto';
+import { CreateAuthDto, LoginAuthDto, UpdateAuthDto } from './dto';
 import { User } from './entities/user.entity';
 
 @Injectable()
@@ -26,8 +25,42 @@ export class AuthService {
         password: bcrypt.hashSync(dto.password, 10),
       };
       const user = await this.userService.create(userCreated);
+      const userWithImportantInfo = {
+        email: user.email,
+        _id: user._id,
+      };
+
       return {
-        user,
+        user: userWithImportantInfo,
+        token: await this.signInToken(
+          user._id.toString(),
+          user.email,
+          user.fullname,
+        ),
+      };
+    } catch (error) {
+      this.handleException(error);
+    }
+  }
+
+  async login(dto: LoginAuthDto) {
+    try {
+      const user = await this.userService.findOne(
+        { email: dto.email },
+        { email: 1, password: 1 },
+      );
+      if (!user) throw new NotFoundException('Credenciales incorrectas');
+
+      const pwdMatch = bcrypt.compareSync(dto.password, user.password);
+      if (!pwdMatch) throw new NotFoundException('Credenciales incorrectas');
+
+      const userWithoutPassword = {
+        _id: user._id,
+        email: user.email,
+      };
+
+      return {
+        user: userWithoutPassword,
         token: await this.signInToken(
           user._id.toString(),
           user.email,
@@ -51,7 +84,6 @@ export class AuthService {
   async findOne(param: string, value: string) {
     try {
       const user = await this.userService.findOne({ [param]: value });
-
       if (!user) throw new NotFoundException('El usuario no existe');
 
       return user;
@@ -63,16 +95,14 @@ export class AuthService {
   async update(id: string, dto: UpdateAuthDto) {
     try {
       const user = await this.findOne('_id', id);
-      if (!user) throw new NotFoundException('El usuario no existe');
+      let password: string = dto.password;
 
-      return this.userService.findByIdAndUpdate(
-        id,
-        {
-          ...dto,
-          updatedAt: new Date(),
-        },
-        { new: true },
-      );
+      if (dto.password) password = bcrypt.hashSync(dto.password, 10);
+
+      if (!user) throw new NotFoundException('El usuario no existe');
+      const userUpdated = { ...dto, password, updatedAt: new Date() };
+
+      return this.userService.findByIdAndUpdate(id, userUpdated, { new: true });
     } catch (error) {
       this.handleException(error);
     }
@@ -99,9 +129,7 @@ export class AuthService {
     }
 
     console.log(error);
-    throw new InternalServerErrorException(
-      'No se pudo crear el genero - Revisar la consola',
-    );
+    throw new BadRequestException(error);
   }
 
   async signInToken(userId: string, email: string, name: string) {

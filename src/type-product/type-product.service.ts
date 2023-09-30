@@ -50,11 +50,14 @@ export class TypeProductService {
       if (!typeProduct)
         throw new NotFoundException('Tipo de producto no encontrado');
 
-      return this.typeProductService.findByIdAndUpdate(id, {
+      return this.typeProductService.findByIdAndUpdate(
+        id,
+        {
           ...dto,
           updatedAt: new Date(),
         },
-        { new: true });
+        { new: true },
+      );
     } catch (error) {
       this.handleException(error);
     }
@@ -80,8 +83,6 @@ export class TypeProductService {
     }
 
     console.log(error);
-    throw new InternalServerErrorException(
-      'No se pudo crear el genero - Revisar la consola',
-    );
+    throw new BadRequestException(error);
   }
 }
