@@ -68,17 +68,11 @@ export class ProductService {
 
   async findByCard() {
     try {
-      const products = await this.productService.find().populate('currency');
-      return products.map((product: any) => ({
-        _id: product._id.toString(),
-        title: product.title,
-        price: product.price,
-        images: product.images,
-        currency: {
-          _id: product.currency._id.toString(),
-          name: product.currency.name,
-        },
-      }));
+      const products = await this.productService
+        .find({}, { title: 1, price: 1, images: 1 })
+        .populate('currency');
+
+      return products;
     } catch (error) {
       this.handleException(error);
     }
@@ -89,14 +83,11 @@ export class ProductService {
       const product = await this.findOne('_id', id);
       if (!product) throw new NotFoundException('Producto no encontrado');
 
-      return this.productService.findByIdAndUpdate(
-        id,
-        {
-          ...dto,
-          updatedAt: new Date(),
-        },
-        { new: true },
-      );
+      const productUpdated = { ...dto, updatedAt: new Date() };
+
+      return this.productService.findByIdAndUpdate(id, productUpdated, {
+        new: true,
+      });
     } catch (error) {
       this.handleException(error);
     }
