@@ -1,3 +1,4 @@
+import * as bcrypt from 'bcrypt';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import {
@@ -6,6 +7,7 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 
 import { CreateAuthDto, UpdateAuthDto } from './dto';
 import { User } from './entities/user.entity';
@@ -14,12 +16,24 @@ import { User } from './entities/user.entity';
 export class AuthService {
   constructor(
     @InjectModel(User.name) private readonly userService: Model<User>,
+    private readonly jwtService: JwtService,
   ) {}
 
   async create(dto: CreateAuthDto) {
     try {
-      const user = await this.userService.create(dto);
-      return user;
+      const userCreated = {
+        ...dto,
+        password: bcrypt.hashSync(dto.password, 10),
+      };
+      const user = await this.userService.create(userCreated);
+      return {
+        user,
+        token: await this.signInToken(
+          user._id.toString(),
+          user.email,
+          user.fullname,
+        ),
+      };
     } catch (error) {
       this.handleException(error);
     }
@@ -78,7 +92,7 @@ export class AuthService {
   private handleException(error: any) {
     if (error.code === 11000) {
       throw new BadRequestException(
-        `El genero ya existe en la base de datos ${JSON.stringify(
+        `El usuario ya existe en la base de datos ${JSON.stringify(
           error.keyValue,
         )}`,
       );
@@ -88,5 +102,20 @@ export class AuthService {
     throw new InternalServerErrorException(
       'No se pudo crear el genero - Revisar la consola',
     );
+  }
+
+  async signInToken(userId: string, email: string, name: string) {
+    const payload = {
+      id: userId,
+      email,
+      name,
+    };
+
+    const secret = process.env.SECRET_KEY;
+    const token = await this.jwtService.signAsync(payload, {
+      expiresIn: '72h',
+      secret,
+    });
+    return token;
   }
 }
