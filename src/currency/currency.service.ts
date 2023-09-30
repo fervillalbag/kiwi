@@ -51,11 +51,14 @@ export class CurrencyService {
       const currency = await this.findOne(id);
       if (!currency) throw new NotFoundException('Moneda no encontrada');
 
-      return this.currencyService.findByIdAndUpdate(id, {
+      return this.currencyService.findByIdAndUpdate(
+        id,
+        {
           ...dto,
           updatedAt: new Date(),
         },
-        { new: true });
+        { new: true },
+      );
     } catch (error) {
       this.handleException(error);
     }
@@ -82,8 +85,6 @@ export class CurrencyService {
     }
 
     console.log(error);
-    throw new InternalServerErrorException(
-      'No se pudo crear el genero - Revisar la consola',
-    );
+    throw new BadRequestException(error);
   }
 }

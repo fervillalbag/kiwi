@@ -50,11 +50,14 @@ export class SubCategoryService {
       if (!subCategory)
         throw new NotFoundException('Sub categoria no encontrada');
 
-      return this.subCategoryService.findByIdAndUpdate(id, {
+      return this.subCategoryService.findByIdAndUpdate(
+        id,
+        {
           ...dto,
           updatedAt: new Date(),
         },
-        { new: true });
+        { new: true },
+      );
     } catch (error) {
       this.handleException(error);
     }
@@ -82,8 +85,6 @@ export class SubCategoryService {
     }
 
     console.log(error);
-    throw new InternalServerErrorException(
-      'No se pudo crear el genero - Revisar la consola',
-    );
+    throw new BadRequestException(error);
   }
 }

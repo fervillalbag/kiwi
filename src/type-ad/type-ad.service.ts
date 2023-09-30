@@ -52,11 +52,14 @@ export class TypeAdService {
       if (!typeAd)
         throw new NotFoundException('Tipo de publicidad no encontrada');
 
-      return this.typeAdService.findByIdAndUpdate(id, {
+      return this.typeAdService.findByIdAndUpdate(
+        id,
+        {
           ...dto,
           updatedAt: new Date(),
         },
-        { new: true });
+        { new: true },
+      );
     } catch (error) {
       this.handleException(error);
     }
@@ -84,8 +87,6 @@ export class TypeAdService {
     }
 
     console.log(error);
-    throw new InternalServerErrorException(
-      'No se pudo crear el genero - Revisar la consola',
-    );
+    throw new BadRequestException(error);
   }
 }

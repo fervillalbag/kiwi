@@ -50,13 +50,16 @@ export class StatusProductService {
       if (!statusProduct)
         throw new NotFoundException('El estado de producto no existe');
 
-      return this.statusProductService.findByIdAndUpdate(id, {
+      return this.statusProductService.findByIdAndUpdate(
+        id,
+        {
           ...dto,
           updatedAt: new Date(),
         },
         {
-        new: true,
-      });
+          new: true,
+        },
+      );
     } catch (error) {
       this.handleException(error);
     }
@@ -84,8 +87,6 @@ export class StatusProductService {
     }
 
     console.log(error);
-    throw new InternalServerErrorException(
-      'No se pudo crear el genero - Revisar la consola',
-    );
+    throw new BadRequestException(error);
   }
 }
