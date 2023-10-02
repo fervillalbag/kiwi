@@ -67,8 +67,11 @@ export class Product {
   @Prop({ type: [String], default: [] })
   tags: string[];
 
-  @Prop({ type: [String], default: [] })
-  ad: string[];
+  @Prop({
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'TypeAd' }],
+    required: true,
+  })
+  ad: mongoose.Schema.Types.ObjectId[];
 
   @Prop({ type: [String], default: [] })
   images: string[];
