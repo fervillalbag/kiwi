@@ -49,6 +49,11 @@ export class ProductController {
     return this.productService.findByCard();
   }
 
+  @Get('ad/:type')
+  findProductByAd(@Param('type') type: string) {
+    return this.productService.findProductByAd(type);
+  }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
     return this.productService.update(id, updateProductDto);

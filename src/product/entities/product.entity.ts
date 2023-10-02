@@ -68,6 +68,9 @@ export class Product {
   tags: string[];
 
   @Prop({ type: [String], default: [] })
+  ad: string[];
+
+  @Prop({ type: [String], default: [] })
   images: string[];
 
   @Prop({ type: Date, default: new Date() })

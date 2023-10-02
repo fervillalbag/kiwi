@@ -8,14 +8,11 @@ import {
 
 import { CreateProductDto, UpdateProductDto } from './dto';
 import { Product } from './entities/product.entity';
-import { StatusProduct } from '../status-product/entities/status-product.entity';
 
 @Injectable()
 export class ProductService {
   constructor(
     @InjectModel(Product.name) private readonly productService: Model<Product>,
-    @InjectModel(StatusProduct.name)
-    private readonly statusProductService: Model<StatusProduct>,
   ) {}
 
   async create(dto: CreateProductDto) {
@@ -57,6 +54,16 @@ export class ProductService {
 
       return this.productService.find({
         $or: [{ title: regex }, { description: regex }],
+      });
+    } catch (error) {
+      this.handleException(error);
+    }
+  }
+
+  async findProductByAd(type: string) {
+    try {
+      return this.productService.find({
+        $or: [{ ad: { $in: [type] } }],
       });
     } catch (error) {
       this.handleException(error);
