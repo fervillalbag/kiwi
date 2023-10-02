@@ -8,9 +8,9 @@ import {
   Delete,
   Query,
 } from '@nestjs/common';
+
 import { ProductService } from './product.service';
-import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
+import { CreateProductDto, UpdateProductDto } from './dto';
 
 @Controller('product')
 export class ProductController {
@@ -32,6 +32,11 @@ export class ProductController {
     const value = Object.values(query)[0];
 
     return this.productService.findOne(param, value);
+  }
+
+  @Get('search')
+  findSearch(@Query('value') value: string) {
+    return this.productService.findSearch(value);
   }
 
   @Get('user')
