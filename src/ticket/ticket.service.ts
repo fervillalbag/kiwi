@@ -15,19 +15,32 @@ export class TicketService {
     @InjectModel(Ticket.name) private readonly ticketService: Model<Ticket>,
   ) {}
 
-  create(dto: CreateTicketDto) {
+  create(dto: CreateTicketDto): Promise<Ticket> {
     return this.ticketService.create(dto);
   }
 
-  findAll() {
-    return `This action returns all ticket`;
+  async findAll(): Promise<Ticket[]> {
+    try {
+      const tickets = await this.ticketService
+        .find()
+        .populate('vendor', 'email _id username avatar fullname')
+        .populate('buyer', 'email _id username avatar fullname');
+      return tickets;
+    } catch (error) {
+      this.handleException(error);
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} ticket`;
+  async findOne(id: string): Promise<Ticket> {
+    try {
+      const ticket = await this.ticketService.findById(id);
+      return ticket;
+    } catch (error) {
+      this.handleException(error);
+    }
   }
 
-  update(id: number, dto: UpdateTicketDto) {
+  update(id: string, dto: UpdateTicketDto) {
     return `This action updates a #${id} ticket`;
   }
 
