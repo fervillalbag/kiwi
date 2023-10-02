@@ -19,15 +19,15 @@ export class TicketController {
     return this.ticketService.create(createTicketDto);
   }
 
-  // @Get()
-  // findAll() {
-  //   return this.ticketService.findAll();
-  // }
+  @Get()
+  findAll() {
+    return this.ticketService.findAll();
+  }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.ticketService.findOne(id);
-  // }
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.ticketService.findOne(id);
+  }
 
   // @Patch(':id')
   // update(@Param('id') id: string, @Body() updateTicketDto: UpdateTicketDto) {
