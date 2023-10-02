@@ -28,9 +28,14 @@ export class ProductService {
     try {
       const products = await this.productService
         .find()
-        .populate(
-          'statusProduct category type currency subCategory saleStatus',
-        );
+        .populate('saleStatus', 'name -_id')
+        .populate('statusProduct', 'name -_id')
+        .populate('category', 'name -_id')
+        .populate('type', 'name -_id')
+        .populate('currency', 'name -_id')
+        .populate('subCategory', 'name -_id')
+        .populate('ad', 'name -_id')
+        .populate('owner', 'fullname email username avatar -_id');
       return products;
     } catch (error) {
       this.handleException(error);
@@ -52,9 +57,18 @@ export class ProductService {
     try {
       const regex = new RegExp(value, 'i');
 
-      return this.productService.find({
-        $or: [{ title: regex }, { description: regex }],
-      });
+      return this.productService
+        .find({
+          $or: [{ title: regex }, { description: regex }],
+        })
+        .populate('saleStatus', 'name -_id')
+        .populate('statusProduct', 'name -_id')
+        .populate('category', 'name -_id')
+        .populate('type', 'name -_id')
+        .populate('currency', 'name -_id')
+        .populate('subCategory', 'name -_id')
+        .populate('ad', 'name -_id')
+        .populate('owner', 'fullname email username avatar -_id');
     } catch (error) {
       this.handleException(error);
     }
@@ -72,9 +86,18 @@ export class ProductService {
 
   async findByUser(userId: string) {
     try {
-      const productsByUser = await this.productService.find({
-        owner: userId,
-      });
+      const productsByUser = await this.productService
+        .find({
+          owner: userId,
+        })
+        .populate('saleStatus', 'name -_id')
+        .populate('statusProduct', 'name -_id')
+        .populate('category', 'name -_id')
+        .populate('type', 'name -_id')
+        .populate('currency', 'name -_id')
+        .populate('subCategory', 'name -_id')
+        .populate('ad', 'name -_id')
+        .populate('owner', 'fullname email username avatar -_id');
       if (!productsByUser)
         throw new NotFoundException('Producto no encontrado');
 
