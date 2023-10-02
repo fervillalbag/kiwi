@@ -3,7 +3,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import {
   BadRequestException,
   Injectable,
-  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 
