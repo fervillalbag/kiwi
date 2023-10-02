@@ -3,7 +3,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import {
   BadRequestException,
   Injectable,
-  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 
@@ -47,6 +46,18 @@ export class ProductService {
       if (!product) throw new NotFoundException('Producto no encontrado');
 
       return product;
+    } catch (error) {
+      this.handleException(error);
+    }
+  }
+
+  async findSearch(value: string) {
+    try {
+      const regex = new RegExp(value, 'i');
+
+      return this.productService.find({
+        $or: [{ title: regex }, { description: regex }],
+      });
     } catch (error) {
       this.handleException(error);
     }
