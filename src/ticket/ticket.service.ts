@@ -24,7 +24,37 @@ export class TicketService {
       const tickets = await this.ticketService
         .find()
         .populate('vendor', 'email _id username avatar fullname')
-        .populate('buyer', 'email _id username avatar fullname');
+        .populate('buyer', 'email _id username avatar fullname')
+        .populate({
+          path: 'product',
+          select: 'title price',
+          populate: {
+            path: 'currency',
+            select: 'value -_id',
+          },
+        });
+      return tickets;
+    } catch (error) {
+      this.handleException(error);
+    }
+  }
+
+  async findAllByUser(id: string): Promise<Ticket[]> {
+    try {
+      const tickets = await this.ticketService
+        .find({
+          $or: [{ vendor: id }, { buyer: id }],
+        })
+        .populate('vendor', 'email _id username avatar fullname')
+        .populate('buyer', 'email _id username avatar fullname')
+        .populate({
+          path: 'product',
+          select: 'title price',
+          populate: {
+            path: 'currency',
+            select: 'value -_id',
+          },
+        });
       return tickets;
     } catch (error) {
       this.handleException(error);
@@ -33,15 +63,36 @@ export class TicketService {
 
   async findOne(id: string): Promise<Ticket> {
     try {
-      const ticket = await this.ticketService.findById(id);
+      const ticket = await this.ticketService
+        .findById(id)
+        .populate('vendor', 'email _id username avatar fullname')
+        .populate('buyer', 'email _id username avatar fullname')
+        .populate({
+          path: 'product',
+          select: 'title price',
+          populate: {
+            path: 'currency',
+            select: 'value -_id',
+          },
+        });
       return ticket;
     } catch (error) {
       this.handleException(error);
     }
   }
 
-  update(id: string, dto: UpdateTicketDto) {
-    return `This action updates a #${id} ticket`;
+  async update(id: string, dto: UpdateTicketDto): Promise<Ticket> {
+    try {
+      const ticket = await this.findOne(id);
+      if (!ticket) throw new NotFoundException('Ticket no encontrado');
+
+      const ticketUpdated = { ...dto, updatedAt: new Date() };
+      return this.ticketService.findByIdAndUpdate(id, ticketUpdated, {
+        new: true,
+      });
+    } catch (error) {
+      this.handleException(error);
+    }
   }
 
   async remove(id: string) {

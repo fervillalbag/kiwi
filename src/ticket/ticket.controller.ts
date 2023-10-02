@@ -24,15 +24,20 @@ export class TicketController {
     return this.ticketService.findAll();
   }
 
+  @Get('user/:id')
+  findAllByUser(@Param('id') id: string) {
+    return this.ticketService.findAllByUser(id);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.ticketService.findOne(id);
   }
 
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateTicketDto: UpdateTicketDto) {
-  //   return this.ticketService.update(id, updateTicketDto);
-  // }
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updateTicketDto: UpdateTicketDto) {
+    return this.ticketService.update(id, updateTicketDto);
+  }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
