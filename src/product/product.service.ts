@@ -44,7 +44,16 @@ export class ProductService {
 
   async findOne(param: string, value: string) {
     try {
-      const product = await this.productService.findOne({ [param]: value });
+      const product = await this.productService
+        .findOne({ [param]: value })
+        .populate('saleStatus', 'name -_id')
+        .populate('statusProduct', 'name -_id')
+        .populate('category', 'name -_id')
+        .populate('type', 'name -_id')
+        .populate('currency', 'value -_id')
+        .populate('subCategory', 'name -_id')
+        .populate('ad', 'name -_id')
+        .populate('owner', 'fullname email username avatar -_id');
       if (!product) throw new NotFoundException('Producto no encontrado');
 
       return product;
@@ -65,7 +74,7 @@ export class ProductService {
         .populate('statusProduct', 'name -_id')
         .populate('category', 'name -_id')
         .populate('type', 'name -_id')
-        .populate('currency', 'name -_id')
+        .populate('currency', 'value -_id')
         .populate('subCategory', 'name -_id')
         .populate('ad', 'name -_id')
         .populate('owner', 'fullname email username avatar -_id');
