@@ -33,9 +33,9 @@ export class TypeAdService {
     }
   }
 
-  async findOne(id: string) {
+  async findOne(param: string, value: string) {
     try {
-      const typeAd = await this.typeAdService.findById(id);
+      const typeAd = await this.typeAdService.findOne({ [param]: value });
       if (!typeAd)
         throw new NotFoundException('Tipo de publicidad no encontrada');
 
