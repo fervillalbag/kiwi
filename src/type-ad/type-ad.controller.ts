@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { TypeAdService } from './type-ad.service';
 import { CreateTypeAdDto, UpdateTypeAdDto } from './dto';
@@ -24,9 +25,12 @@ export class TypeAdController {
     return this.typeAdService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.typeAdService.findOne(id);
+  @Get('single')
+  findOne(@Query() query: string) {
+    const param = Object.keys(query)[0];
+    const value = Object.values(query)[0];
+
+    return this.typeAdService.findOne(param, value);
   }
 
   @Patch(':id')

@@ -76,9 +76,15 @@ export class ProductService {
 
   async findProductByAd(type: string) {
     try {
-      return this.productService.find({
-        $or: [{ ad: { $in: [type] } }],
-      });
+      return this.productService
+        .find(
+          {
+            $or: [{ ad: { $in: [type] } }],
+          },
+          { title: 1, price: 1, images: 1 },
+        )
+        .populate('ad', 'name -_id')
+        .populate('currency', '-_id value');
     } catch (error) {
       this.handleException(error);
     }
