@@ -24,8 +24,10 @@ export class ProductService {
     }
   }
 
-  async findAll() {
+  async findAll(page: number, limit: number) {
     try {
+      const skip = (page - 1) * limit;
+
       const products = await this.productService
         .find()
         .populate('saleStatus', 'name -_id')
@@ -35,7 +37,10 @@ export class ProductService {
         .populate('currency', 'name -_id')
         .populate('subCategory', 'name -_id')
         .populate('ad', 'name -_id')
-        .populate('owner', 'fullname email username avatar -_id');
+        .populate('owner', 'fullname email username avatar -_id')
+        .skip(skip)
+        .limit(limit)
+        .exec();
       return products;
     } catch (error) {
       this.handleException(error);
@@ -83,8 +88,10 @@ export class ProductService {
     }
   }
 
-  async findProductByAd(type: string) {
+  async findProductByAd(type: string, page: number, limit: number) {
     try {
+      const skip = (page - 1) * limit;
+
       return this.productService
         .find(
           {
@@ -93,14 +100,19 @@ export class ProductService {
           { title: 1, price: 1, images: 1 },
         )
         .populate('ad', 'name -_id')
-        .populate('currency', '-_id value');
+        .populate('currency', '-_id value')
+        .skip(skip)
+        .limit(limit)
+        .exec();
     } catch (error) {
       this.handleException(error);
     }
   }
 
-  async findByUser(userId: string) {
+  async findByUser(userId: string, page: number, limit: number) {
     try {
+      const skip = (page - 1) * limit;
+
       const productsByUser = await this.productService
         .find({
           owner: userId,
@@ -112,7 +124,10 @@ export class ProductService {
         .populate('currency', 'name -_id')
         .populate('subCategory', 'name -_id')
         .populate('ad', 'name -_id')
-        .populate('owner', 'fullname email username avatar -_id');
+        .populate('owner', 'fullname email username avatar -_id')
+        .skip(skip)
+        .limit(limit)
+        .exec();
       if (!productsByUser)
         throw new NotFoundException('Producto no encontrado');
 
@@ -122,11 +137,16 @@ export class ProductService {
     }
   }
 
-  async findByCard() {
+  async findByCard(page: number, limit: number) {
     try {
+      const skip = (page - 1) * limit;
+
       const products = await this.productService
         .find({}, { title: 1, price: 1, images: 1 })
-        .populate('currency');
+        .populate('currency')
+        .skip(skip)
+        .limit(limit)
+        .exec();
 
       return products;
     } catch (error) {
