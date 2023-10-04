@@ -22,8 +22,8 @@ export class ProductController {
   }
 
   @Get()
-  findAll() {
-    return this.productService.findAll();
+  findAll(@Query('page') page = 1, @Query('limit') limit = 10) {
+    return this.productService.findAll(+page, +limit);
   }
 
   @Get('single')
@@ -39,19 +39,27 @@ export class ProductController {
     return this.productService.findSearch(value);
   }
 
-  @Get('user')
-  findByUser(@Param('id') id: string) {
-    return this.productService.findByUser(id);
+  @Get('user/:id')
+  findByUser(
+    @Param('id') id: string,
+    @Query('page') page = 1,
+    @Query('limit') limit = 10,
+  ) {
+    return this.productService.findByUser(id, +page, +limit);
   }
 
   @Get('card')
-  findByCard() {
-    return this.productService.findByCard();
+  findByCard(@Query('page') page = 1, @Query('limit') limit = 10) {
+    return this.productService.findByCard(+page, +limit);
   }
 
   @Get('ad/:type')
-  findProductByAd(@Param('type') type: string) {
-    return this.productService.findProductByAd(type);
+  findProductByAd(
+    @Param('type') type: string,
+    @Query('page') page = 1,
+    @Query('limit') limit = 10,
+  ) {
+    return this.productService.findProductByAd(type, +page, +limit);
   }
 
   @Patch(':id')
