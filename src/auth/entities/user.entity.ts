@@ -35,7 +35,7 @@ export class User {
   gender: string;
 
   @Prop({ type: 'string' })
-  skin: string;
+  skin?: string;
 
   @Prop({ type: 'boolean' })
   affiliated: boolean;

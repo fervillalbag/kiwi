@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 @Schema()
 export class Gender {
-  @Prop({ unique: true, index: true })
+  @Prop({ type: 'string', unique: true })
   name: string;
 
   @Prop({ type: Date, default: new Date() })
