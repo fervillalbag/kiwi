@@ -29,6 +29,11 @@ export class SubCategoryController {
     return this.subCategoryService.findOne(id);
   }
 
+  @Get('category/:id')
+  findAllByCategory(@Param('id') id: string) {
+    return this.subCategoryService.findAllByCategory(id);
+  }
+
   @Patch(':id')
   update(
     @Param('id') id: string,
