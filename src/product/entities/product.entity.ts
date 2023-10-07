@@ -70,6 +70,7 @@ export class Product {
   @Prop({
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'TypeAd' }],
     required: true,
+    default: [],
   })
   ad: mongoose.Schema.Types.ObjectId[];
 
