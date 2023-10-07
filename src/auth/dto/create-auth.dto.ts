@@ -33,8 +33,8 @@ export class CreateAuthDto {
   gender: string;
 
   @IsString()
-  @IsNotEmpty()
-  skin: string;
+  @IsOptional()
+  skin?: string;
 
   @IsBoolean()
   @IsOptional()
@@ -50,9 +50,11 @@ export class CreateAuthDto {
 
   @IsArray()
   @IsString({ each: true })
-  roles: string[];
+  @IsOptional()
+  roles?: string[];
 
   @IsArray()
   @IsString({ each: true })
-  topics: string[];
+  @IsOptional()
+  topics?: string[];
 }

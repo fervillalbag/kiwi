@@ -20,6 +20,7 @@ export class GenderService {
       const gender = await this.genderService.create(dto);
       return gender;
     } catch (error) {
+      console.log(error);
       this.handleException(error);
     }
   }
