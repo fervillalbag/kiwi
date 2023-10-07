@@ -34,6 +34,17 @@ export class SubCategoryService {
     }
   }
 
+  async findAllByCategory(id: string) {
+    try {
+      const subCategories = await this.subCategoryService.find({
+        category: id,
+      });
+      return subCategories;
+    } catch (error) {
+      this.handleException(error);
+    }
+  }
+
   async findOne(id: string) {
     try {
       const subCategory = await this.subCategoryService.findById(id);
