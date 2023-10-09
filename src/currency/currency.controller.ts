@@ -29,6 +29,11 @@ export class CurrencyController {
     return this.currencyService.findOne(id);
   }
 
+  @Get('name/:name')
+  findOneByName(@Param('name') name: string) {
+    return this.currencyService.findOneByName(name);
+  }
+
   @Patch(':id')
   update(
     @Param('id') id: string,

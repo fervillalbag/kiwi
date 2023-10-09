@@ -43,6 +43,17 @@ export class SaleStatusService {
     }
   }
 
+  async findOneByName(name: string) {
+    try {
+      const saleStatus = await this.saleStatusService.findOne({
+        name,
+      });
+      return saleStatus;
+    } catch (error) {
+      this.handleException(error);
+    }
+  }
+
   async update(id: string, dto: UpdateSaleStatusDto) {
     try {
       const saleStatus = await this.findOne(id);

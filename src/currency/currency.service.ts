@@ -45,6 +45,17 @@ export class CurrencyService {
     }
   }
 
+  async findOneByName(name: string) {
+    try {
+      const currency = await this.currencyService.findOne({ name });
+      if (!currency) throw new NotFoundException('Moneda no encontrada');
+
+      return currency;
+    } catch (error) {
+      this.handleException(error);
+    }
+  }
+
   async update(id: string, dto: UpdateCurrencyDto) {
     try {
       const currency = await this.findOne(id);

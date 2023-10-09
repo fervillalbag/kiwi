@@ -30,6 +30,11 @@ export class SaleStatusController {
     return this.saleStatusService.findOne(id);
   }
 
+  @Get('name/:name')
+  findOneByName(@Param('name') name: string) {
+    return this.saleStatusService.findOneByName(name);
+  }
+
   @Patch(':id')
   update(
     @Param('id') id: string,
