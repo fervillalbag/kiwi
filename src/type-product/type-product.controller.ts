@@ -30,6 +30,11 @@ export class TypeProductController {
     return this.typeProductService.findOne(id);
   }
 
+  @Get('name/:name')
+  findOneByName(@Param('name') name: string) {
+    return this.typeProductService.findOneByName(name);
+  }
+
   @Patch(':id')
   update(
     @Param('id') id: string,

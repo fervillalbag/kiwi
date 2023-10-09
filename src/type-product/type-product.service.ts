@@ -43,6 +43,15 @@ export class TypeProductService {
     }
   }
 
+  async findOneByName(name: string) {
+    try {
+      const typeProduct = await this.typeProductService.findOne({ name });
+      return typeProduct;
+    } catch (error) {
+      this.handleException(error);
+    }
+  }
+
   async update(id: string, dto: UpdateTypeProductDto) {
     try {
       const typeProduct = await this.findOne(id);
