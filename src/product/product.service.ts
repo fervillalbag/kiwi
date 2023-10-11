@@ -34,7 +34,7 @@ export class ProductService {
         .populate('statusProduct', 'name -_id')
         .populate('category', 'name -_id')
         .populate('type', 'name -_id')
-        .populate('currency', 'name -_id')
+        .populate('currency', 'value -_id')
         .populate('subCategory', 'name -_id')
         .populate('ad', 'name -_id')
         .populate('owner', 'fullname email username avatar -_id')
@@ -121,7 +121,7 @@ export class ProductService {
         .populate('statusProduct', 'name -_id')
         .populate('category', 'name -_id')
         .populate('type', 'name -_id')
-        .populate('currency', 'name -_id')
+        .populate('currency', 'value -_id')
         .populate('subCategory', 'name -_id')
         .populate('ad', 'name -_id')
         .populate('owner', 'fullname email username avatar -_id')
@@ -143,7 +143,7 @@ export class ProductService {
 
       const products = await this.productService
         .find({}, { title: 1, price: 1, images: 1 })
-        .populate('currency')
+        .populate('currency', 'value -_id')
         .skip(skip)
         .limit(limit)
         .exec();
