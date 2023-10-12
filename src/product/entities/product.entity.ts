@@ -26,9 +26,9 @@ export class Product {
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'SubCategory',
-    required: true,
+    required: false,
   })
-  subCategory: mongoose.Schema.Types.ObjectId;
+  subCategory?: mongoose.Schema.Types.ObjectId;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,

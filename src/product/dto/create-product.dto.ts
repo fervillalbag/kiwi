@@ -24,7 +24,7 @@ export class CreateProductDto {
   category: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   subCategory: string;
 
   @IsString()
