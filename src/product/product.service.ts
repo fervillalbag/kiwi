@@ -34,6 +34,7 @@ export class ProductService {
         .populate('statusProduct', 'name -_id')
         .populate('category', 'name -_id')
         .populate('type', 'name -_id')
+        .populate('createdAt')
         .populate('currency', 'value -_id')
         .populate('subCategory', 'name -_id')
         .populate('ad', 'name -_id')
@@ -55,6 +56,7 @@ export class ProductService {
         .populate('statusProduct', 'name -_id')
         .populate('category', 'name -_id')
         .populate('type', 'name -_id')
+        .populate('createdAt')
         .populate('currency', 'value -_id')
         .populate('subCategory', 'name -_id')
         .populate('ad', 'name -_id')
@@ -78,6 +80,7 @@ export class ProductService {
         .populate('saleStatus', 'name -_id')
         .populate('statusProduct', 'name -_id')
         .populate('category', 'name -_id')
+        .populate('createdAt')
         .populate('type', 'name -_id')
         .populate('currency', 'value -_id')
         .populate('subCategory', 'name -_id')
@@ -100,6 +103,7 @@ export class ProductService {
           { title: 1, price: 1, images: 1 },
         )
         .populate('ad', 'name -_id')
+        .populate('createdAt')
         .populate('currency', '-_id value')
         .skip(skip)
         .limit(limit)
@@ -123,6 +127,7 @@ export class ProductService {
         .populate('type', 'name -_id')
         .populate('currency', 'value -_id')
         .populate('subCategory', 'name -_id')
+        .populate('createdAt')
         .populate('ad', 'name -_id')
         .populate('owner', 'fullname email username avatar -_id')
         .skip(skip)
@@ -142,7 +147,7 @@ export class ProductService {
       const skip = (page - 1) * limit;
 
       const products = await this.productService
-        .find({}, { title: 1, price: 1, images: 1 })
+        .find({}, { title: 1, price: 1, images: 1, createdAt: 1 })
         .populate('currency', 'value -_id')
         .skip(skip)
         .limit(limit)
