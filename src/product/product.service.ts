@@ -60,7 +60,7 @@ export class ProductService {
         .populate('currency', 'value -_id')
         .populate('subCategory', 'name -_id')
         .populate('ad', 'name -_id')
-        .populate('owner', 'fullname email username avatar -_id');
+        .populate('owner', 'fullname email username avatar');
       if (!product) throw new NotFoundException('Producto no encontrado');
 
       return product;
