@@ -149,6 +149,7 @@ export class ProductService {
       const products = await this.productService
         .find({}, { title: 1, price: 1, images: 1, createdAt: 1 })
         .populate('currency', 'value -_id')
+        .populate('saleStatus', 'name -_id')
         .skip(skip)
         .limit(limit)
         .exec();

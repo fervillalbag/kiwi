@@ -27,7 +27,7 @@ export class TicketService {
         .populate('buyer', 'email _id username avatar fullname')
         .populate({
           path: 'product',
-          select: 'title price',
+          select: 'title price images',
           populate: {
             path: 'currency',
             select: 'value -_id',
@@ -49,7 +49,7 @@ export class TicketService {
         .populate('buyer', 'email _id username avatar fullname')
         .populate({
           path: 'product',
-          select: 'title price',
+          select: 'title price images',
           populate: {
             path: 'currency',
             select: 'value -_id',
@@ -69,7 +69,7 @@ export class TicketService {
         .populate('buyer', 'email _id username avatar fullname')
         .populate({
           path: 'product',
-          select: 'title price',
+          select: 'title price images',
           populate: {
             path: 'currency',
             select: 'value -_id',
