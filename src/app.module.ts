@@ -17,6 +17,7 @@ import { EnvConfiguration } from './config/app.config';
 import { JoinValidationSchema } from './config/joi.validation';
 import { BranchOfficeModule } from './branch-office/branch-office.module';
 import { TicketModule } from './ticket/ticket.module';
+import { MessageModule } from './message/message.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { TicketModule } from './ticket/ticket.module';
     TypeAdModule,
     BranchOfficeModule,
     TicketModule,
+    MessageModule,
   ],
 })
 export class AppModule {}
