@@ -1,4 +1,6 @@
+import { ObjectId } from 'mongoose';
 import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
+
 import { MessageService } from './message.service';
 import { CreateMessageDto } from './dto/create-message.dto';
 
@@ -17,6 +19,11 @@ export class MessageController {
     @Query('receiver') receiver: string,
   ) {
     return this.messageService.findAll(sender, receiver);
+  }
+
+  @Get('user/:userId/contacts')
+  findAllByContacts(@Param('userId') userId: ObjectId) {
+    return this.messageService.findAllByContacts(userId);
   }
 
   @Get(':id')
