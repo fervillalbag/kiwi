@@ -21,6 +21,14 @@ export class MessageController {
     return this.messageService.findAll(sender, receiver);
   }
 
+  @Get('mark-messages-as-seen')
+  markMessagesAsSeen(
+    @Query('sender') sender: string,
+    @Query('receiver') receiver: string,
+  ) {
+    return this.messageService.markMessagesAsSeen(sender, receiver);
+  }
+
   @Get('user/:userId/contacts')
   findAllByContacts(@Param('userId') userId: ObjectId) {
     return this.messageService.findAllByContacts(userId);
