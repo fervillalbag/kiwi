@@ -38,6 +38,26 @@ export class MessageService {
     }
   }
 
+  async markMessagesAsSeen(sender: string, receiver: string) {
+    try {
+      const result = await this.messageModel.updateMany(
+        {
+          $or: [
+            { sender, receiver },
+            { sender: receiver, receiver: sender },
+          ],
+          seen: false,
+        },
+        {
+          $set: { seen: true },
+        },
+      );
+      return result;
+    } catch (error) {
+      this.handleException(error);
+    }
+  }
+
   async findLastMessage(sender: string, receiver: string) {
     try {
       const lastMessage = await this.messageModel
@@ -123,7 +143,7 @@ export class MessageService {
 
         const user = await this.userModel.findOne(
           { _id: contact },
-          { fullname: 1, avatar: 1 },
+          { fullname: 1, avatar: 1, username: 1 },
         );
 
         return { user, lastMessage, unreadMessages: messagesNotSeen };
