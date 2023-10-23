@@ -14,10 +14,10 @@ export class Category {
   @Prop({ type: 'boolean', default: true })
   isActive: boolean;
 
-  @Prop({ type: Date, default: new Date() })
+  @Prop({ type: Date, default: Date.now })
   createdAt: Date;
 
-  @Prop({ type: Date, default: new Date() })
+  @Prop({ type: Date, default: Date.now })
   updatedAt: Date;
 }
 

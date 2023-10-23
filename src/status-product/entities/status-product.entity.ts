@@ -5,10 +5,10 @@ export class StatusProduct {
   @Prop({ type: 'string', unique: true })
   name: string;
 
-  @Prop({ type: Date, default: new Date() })
+  @Prop({ type: Date, default: Date.now })
   createdAt: Date;
 
-  @Prop({ type: Date, default: new Date() })
+  @Prop({ type: Date, default: Date.now })
   updatedAt: Date;
 }
 

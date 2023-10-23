@@ -32,10 +32,10 @@ export class BranchOffice {
   @Prop({ type: 'string', required: true })
   schedule: string;
 
-  @Prop({ type: Date, default: new Date() })
+  @Prop({ type: Date, default: Date.now })
   createdAt: Date;
 
-  @Prop({ type: Date, default: new Date() })
+  @Prop({ type: Date, default: Date.now })
   updatedAt: Date;
 }
 
