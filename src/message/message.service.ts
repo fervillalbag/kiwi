@@ -73,6 +73,7 @@ export class MessageService {
         .sort({ createdAt: -1 })
         .limit(1)
         .exec();
+
       return lastMessage;
     } catch (error) {
       this.handleException(error);

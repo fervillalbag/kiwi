@@ -46,10 +46,10 @@ export class User {
   @Prop({ type: [String], default: [] })
   topics: string[];
 
-  @Prop({ type: Date, default: new Date() })
+  @Prop({ type: Date, default: Date.now })
   createdAt: Date;
 
-  @Prop({ type: Date, default: new Date() })
+  @Prop({ type: Date, default: Date.now })
   updatedAt: Date;
 }
 
