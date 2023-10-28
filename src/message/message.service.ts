@@ -24,15 +24,24 @@ export class MessageService {
 
   async findAll(sender: string, receiver: string) {
     try {
-      const messages = await this.messageModel
-        .find({
-          $or: [
-            { sender: sender, receiver: receiver },
-            { sender: receiver, receiver: sender },
-          ],
-        })
-        .exec();
-      return messages;
+      if (!receiver) {
+        const messages = await this.messageModel
+          .find({
+            $or: [{ sender: sender }, { receiver: sender }],
+          })
+          .exec();
+        return messages;
+      } else {
+        const messages = await this.messageModel
+          .find({
+            $or: [
+              { sender: sender, receiver: receiver },
+              { sender: receiver, receiver: sender },
+            ],
+          })
+          .exec();
+        return messages;
+      }
     } catch (error) {
       this.handleException(error);
     }
