@@ -1,4 +1,7 @@
 {
+  "engines": {
+    "node": "20.9.0"
+  },
   "name": "kiwi",
   "version": "0.0.1",
   "description": "",
